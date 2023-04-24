@@ -21,14 +21,18 @@ public class EtudiantController {
     @Autowired
     private EtudiantService etudiantService;
 
-    @GetMapping("/{cin}")
-    public Etudiant getEtudiantById(@PathVariable long cin) {
-        return etudiantService.getEtudiantById(cin);
+    @RequestMapping(value = "/{cin}",method = RequestMethod.GET)
+    public ResponseEntity<Etudiant> getEtudiantById(@PathVariable long cin) {
+        return ResponseEntity.ok().body(etudiantService.getEtudiantById(cin));
     }
 
-    @GetMapping("/signin")
-    public Etudiant signIn(@RequestParam String email, @RequestParam long password) {
-        return etudiantService.signIn(email, password);
+    @RequestMapping(value = "/signin",method = RequestMethod.GET)
+    public ResponseEntity<Etudiant> signIn(@RequestParam String email, @RequestParam long password) {
+        Etudiant e=etudiantService.signIn(email, password);
+        if(e==null)
+            return ResponseEntity.ok().body(null);
+        else
+            return ResponseEntity.ok().body(e);
     }
 
 
@@ -36,8 +40,20 @@ public class EtudiantController {
     //@RequestMapping()
     public List<Etudiant> getAllEtudiants()
     {
-        return etudiantService.getAllEtudiants();    }
+        return etudiantService.getAllEtudiants();
+    }
 
+    @GetMapping("/alletudiantsByGroupe/{niveau}/{groupe}")
+    public ResponseEntity<List<Etudiant>> getEtudiantsByGroupe(@PathVariable("niveau") int niveau,@PathVariable("groupe") char groupe)
+    {
+        List<Etudiant> etudiants = etudiantService.getEtudiantsByGroupe(niveau, groupe);
+
+        if (etudiants.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok().body(etudiants);
+        }
+    }
     @RequestMapping(value = "/update/{cin}",method = RequestMethod.PUT)
     public ResponseEntity<String> updateEtudiant(@PathVariable("cin") long cin, @RequestParam(value = "email",defaultValue = "") String email,@RequestParam(value = "numtel",defaultValue = "0") long numtel)
     {

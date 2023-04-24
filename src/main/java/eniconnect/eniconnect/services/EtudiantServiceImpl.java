@@ -46,6 +46,11 @@ public class EtudiantServiceImpl implements EtudiantService {
     {
         return etudiantRepository.save(e);
     }
+    @Override
+    public List<Etudiant> getEtudiantsByGroupe(int niveau,char groupe)
+    {
+        return etudiantRepository.getEtudiantsByGroupe(niveau,groupe);
+    }
 
 
 
