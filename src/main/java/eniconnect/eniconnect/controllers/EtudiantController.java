@@ -26,7 +26,7 @@ public class EtudiantController {
     }
 
 
-   @GetMapping("/alletudiants")
+    @GetMapping("/alletudiants")
     //@RequestMapping()
     public List<Etudiant> getAllEtudiants()
     {
