@@ -1,5 +1,6 @@
 package eniconnect.eniconnect.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,7 +26,12 @@ public class DocOfficiel {
     @JoinColumn(name="etuddoc_fk",referencedColumnName = "cin",nullable = false)
     private Etudiant etudiant;
 
-    public DocOfficiel(String name, String type, byte[] data,Etudiant etudiant) {
+    @JsonBackReference
+    public Etudiant getEtudiant() {
+        return etudiant;
+    }
+
+    public DocOfficiel(String name, String type, byte[] data, Etudiant etudiant) {
         this.file_name = name;
         this.type = type;
         this.file = data;

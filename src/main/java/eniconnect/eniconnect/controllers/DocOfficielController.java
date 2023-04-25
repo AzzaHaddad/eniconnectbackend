@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.Optional;
 
 @RestController
@@ -62,20 +63,31 @@ public class DocOfficielController {
 
 
     @RequestMapping(value = "/update/{id}",method = RequestMethod.PUT)
-    public ResponseEntity<String> uploadDocument(@PathVariable("id") int id,@RequestParam("file") MultipartFile file) throws IOException, MessagingException {
+    public ResponseEntity<String> updateDocument(@PathVariable("id") int id,@RequestParam(value = "file",required = false) MultipartFile file,@RequestParam(value = "type",defaultValue = "") String type) throws IOException, MessagingException {
                 DocOfficiel document = documentService.getDocument(id);
                 if (document == null) {
                     return ResponseEntity.ok().body("Document inexistant");
                 }
                 else
                 {
-                    document.setFile(file.getBytes());
-                    document.setFile_name(StringUtils.cleanPath(file.getOriginalFilename()));
-                    System.out.println(file.getOriginalFilename());
-                    String subject = "UPDATE DOCUMENT";
-                    String text = "Cher etudiant, \n\nle document "+document.getFile_name()+" a ete modifie \n\nCordialement!";
-                    emailService.sendEmail(etudiantService.getEtudiantById(document.getEtudiant().getCin()).getEmail(), subject, text);
-                    return ResponseEntity.ok().body("Document updated successfully with ID "+docRepository.save(document).getId());
+                    //&&((document.getType()!=type)||(Arrays.equals(document.getFile(),file.getBytes())))
+                    if((file!=null||(!type.isEmpty()))) {
+                        if ((!type.isEmpty()))
+                            document.setType(type);
+                        if (file != null)  {
+                            document.setFile(file.getBytes());
+                            document.setFile_name(StringUtils.cleanPath(file.getOriginalFilename()));
+                            System.out.println(file.getOriginalFilename());
+                        }
+                        String subject = "UPDATE DOCUMENT";
+                        String text = "Cher etudiant, \n\nle document " + document.getFile_name() + " a ete modifie \n\nCordialement!";
+                        emailService.sendEmail(etudiantService.getEtudiantById(document.getEtudiant().getCin()).getEmail(), subject, text);
+
+                        return ResponseEntity.ok().body("Document updated successfully with ID " + docRepository.save(document).getId());
+                    }
+                    else
+                        return ResponseEntity.ok().body("Pas de mis à jour car pas de changement des attributs");
+
                 }
     }
 

@@ -28,6 +28,7 @@ public class EtudiantServiceImpl implements EtudiantService {
     public Etudiant signIn(String email, long password)
             //password = CIN
     {
+
         Etudiant etudiant = etudiantRepository.signIn(email, password);
         if (etudiant != null) {
             System.out.print("User indentified");        }
@@ -36,8 +37,21 @@ public class EtudiantServiceImpl implements EtudiantService {
             System.out.print("user no");        }
         return etudiant;
     }
+    @Override
     public List<Etudiant> getAllEtudiants(){
         return etudiantRepository.findAll();
     }
+    @Override
+    public Etudiant updateEtudiant(Etudiant e)
+    {
+        return etudiantRepository.save(e);
+    }
+    @Override
+    public List<Etudiant> getEtudiantsByGroupe(int niveau,char groupe)
+    {
+        return etudiantRepository.getEtudiantsByGroupe(niveau,groupe);
+    }
+
+
 
 }

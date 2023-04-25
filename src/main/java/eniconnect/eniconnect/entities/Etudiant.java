@@ -1,5 +1,6 @@
 package eniconnect.eniconnect.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -42,10 +43,25 @@ public class Etudiant {
 
     @Column(name = "niveau")
     private int niveau;
+    @Column(name="groupe")
+    private char groupe;
     @OneToMany(targetEntity = DocOfficiel.class,mappedBy = "etudiant",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
     private List<DocOfficiel> docOfficiels;
+    @OneToMany(targetEntity = Demande.class,mappedBy = "etudiant",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
+    private List<Demande> demandes;
 
-    @PrePersist
+
+    @JsonManagedReference
+    public List<DocOfficiel> getDocOfficiels() {
+        return docOfficiels;
+    }
+    @JsonManagedReference
+    public List<Demande> getDemandes() {
+        return demandes;
+    }
+
+    //we're not gonna manipulate students
+   /* @PrePersist
     @PreUpdate
     private void validateFiliere() {
         if (filiere != null && !isValidFiliere(filiere)) {
@@ -62,7 +78,7 @@ public class Etudiant {
             }
         }
         return false;
-    }
+    }*/
 
 }
 
