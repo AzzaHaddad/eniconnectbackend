@@ -2,7 +2,9 @@ package eniconnect.eniconnect.controllers;
 
 import eniconnect.eniconnect.entities.DocOfficiel;
 import eniconnect.eniconnect.entities.EmploiTemps;
+import eniconnect.eniconnect.entities.Etudiant;
 import eniconnect.eniconnect.services.EmploiTempsService;
+import eniconnect.eniconnect.services.EtudiantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -16,11 +18,14 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/emploiTemps")
-@CrossOrigin("http://localhost:8081")
+@CrossOrigin(maxAge = 3600)
 public class EmploiTempsController {
 
     @Autowired
     EmploiTempsService emptservice;
+
+    @Autowired
+    EtudiantService etudiantService;
 
     @RequestMapping(value = "/consultById/{id}", method = RequestMethod.GET)
     public ResponseEntity<InputStreamResource> viewEmploiById(@PathVariable("id") int id) throws IOException {
@@ -28,8 +33,8 @@ public class EmploiTempsController {
         if (empt == null) {
             return ResponseEntity.notFound().build();
         }
-        String filePath = "file:///C:/Users/azzah/OneDrive/Desktop/ZOUZA/files/emploiTemps/" + empt.getNiveau()+empt.getGroupe()+empt.getSemestre()+empt.getAnnee()+".pdf";
-
+        String filePath = "file:///D:/user/bureau/BdProjetweb/" + empt.getNiveau()+empt.getGroupe()+empt.getSemestre()+empt.getAnnee()+".pdf";
+        System.out.println(filePath);
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + empt.getNiveau()+empt.getGroupe()+empt.getSemestre()+empt.getAnnee()+".pdf");
 
@@ -47,14 +52,13 @@ public class EmploiTempsController {
                 .body(inputStreamResource);
     }
     @RequestMapping(value = "/consult", method = RequestMethod.GET)
-    public ResponseEntity<InputStreamResource> viewEmploi(@RequestParam("niveau") int niveau,@RequestParam("groupe") char groupe,@RequestParam("semestre") int semestre,@RequestParam("annee") int annee) throws IOException {
-        EmploiTemps empt = emptservice.getEmploi(niveau, groupe, semestre, annee);
-        if (empt == null) {
-            return ResponseEntity.notFound().build();
-        }
-        String filePath = "file:///C:/Users/azzah/OneDrive/Desktop/ZOUZA/emploiTemps/" + niveau + groupe + semestre + annee+".pdf";
+    public ResponseEntity<InputStreamResource> viewEmploi(@RequestParam("cin") long cin ,@RequestParam("semestre") int semestre,@RequestParam("annee") int annee) throws IOException {
+        Etudiant etd = etudiantService.getEtudiantById(cin);
+        String filePath = "file:///D:/user/bureau/BdProjetweb/" + etd.getNiveau() + etd.getGroupe() + semestre + annee+".pdf";
+        System.out.println(filePath);
+        System.out.println("---------------------------");
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + empt.getNiveau()+empt.getGroupe()+empt.getSemestre()+empt.getAnnee()+".pdf");
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + etd.getNiveau()  +  etd.getGroupe() + semestre + annee+".pdf");
         Resource resource = new UrlResource(filePath);
         if (!resource.exists()) {
             return ResponseEntity.notFound().build();

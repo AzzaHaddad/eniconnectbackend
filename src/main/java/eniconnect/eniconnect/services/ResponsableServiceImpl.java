@@ -27,7 +27,6 @@ public class ResponsableServiceImpl implements ResponsableService{
     public Responsable addResponsable(Responsable responsable) {
         String encodedPassword = passwordEncoder.encode(responsable.getPassword());
         responsable.setPassword(encodedPassword);
-        responsableRepository.save(responsable);
         return responsableRepository.save(responsable);
     }
 
@@ -53,6 +52,10 @@ public class ResponsableServiceImpl implements ResponsableService{
     @Override
     public void deleteResponsable(Responsable responsable) {
         responsableRepository.delete(responsable);
+    }
+
+    public Responsable updateResponsable(Responsable responsable) {
+        return responsableRepository.save(responsable);
     }
 }
 

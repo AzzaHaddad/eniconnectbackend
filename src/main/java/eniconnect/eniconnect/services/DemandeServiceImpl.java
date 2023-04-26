@@ -14,6 +14,8 @@ import java.util.List;
 public class DemandeServiceImpl implements DemandeService {
     @Autowired
     private DemandeRepository demandeRepository;
+    @Autowired
+    private EtudiantService etudiantService;
 
     public List<Demande> getAllDemandes() {
         return demandeRepository.findAll();
@@ -23,12 +25,14 @@ public class DemandeServiceImpl implements DemandeService {
         return demandeRepository.findById(id).orElse(null);
     }
 
-    public Demande createDemande(String objet,String contenu) {
+    public Demande createDemande(String objet,String contenu, long cin) {
+        Etudiant etd = etudiantService.getEtudiantById(cin);
         Demande demande=new Demande();
         demande.setObjet(objet);
         demande.setContenu(contenu);
         demande.setEtat(EtatDemande.EN_ATTENTE);
         demande.setDateDemande(LocalDateTime.now());
+        demande.setEtudiant(etd);
         return demandeRepository.save(demande);
     }
 
@@ -47,5 +51,10 @@ public class DemandeServiceImpl implements DemandeService {
     /*public List<Demande> getDemandesByEtudiant(long cin) {
         return demandeRepository.findByEtudiant(cin);
     }*/
+
+    public List<Demande> getAllDemandesByEtudiant(long cin)
+    {
+        return demandeRepository.findByEtudiantCin(cin);
+    }
 }
 

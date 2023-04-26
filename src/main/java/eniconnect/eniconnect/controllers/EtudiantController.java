@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/etudiants")
-@CrossOrigin("http://localhost:8081")
+@CrossOrigin(maxAge = 3600)
 public class EtudiantController {
 
     @Autowired

@@ -13,6 +13,7 @@ public interface ResponsableService{
     public Responsable signIn(String email, String password);
     Responsable responsableExistsByEmail(String email);
     void deleteResponsable(Responsable responsable);
+    public Responsable updateResponsable(Responsable responsable);
 
 
 
